@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+<div class="admin-layout">
+  {# Sidebar navigation #}
+  <aside class="admin-sidebar">
+    <div style="padding:0 1.5rem 1rem;font-family:var(--font-heading);font-size:1.1rem;font-weight:700;">Admin Panel</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}">📊 Dashboard</a>
+    <a href="{{ url_for('admin.products') }}" class="{% if 'product' in request.endpoint|default('') %}active{% endif %}">🍬 Products</a>
+    <a href="{{ url_for('admin.categories') }}" class="{% if 'categor' in request.endpoint|default('') %}active{% endif %}">📁 Categories</a>
+    <a href="{{ url_for('admin.orders') }}" class="{% if 'order' in request.endpoint|default('') %}active{% endif %}">📦 Orders</a>
+    <a href="{{ url_for('admin.users') }}" class="{% if 'user' in request.endpoint|default('') %}active{% endif %}">👥 Users</a>
+    <a href="{{ url_for('admin.coupons') }}" class="{% if 'coupon' in request.endpoint|default('') %}active{% endif %}">🏷️ Coupons</a>
+    <a href="{{ url_for('admin.delivery_zones') }}" class="{% if 'delivery' in request.endpoint|default('') %}active{% endif %}">🚚 Delivery Zones</a>
+    <a href="{{ url_for('admin.reports') }}" class="{% if 'report' in request.endpoint|default('') %}active{% endif %}">📈 Reports</a>
+    <hr style="border-color:rgba(255,255,255,0.15);margin:1rem 1.5rem;">
+    <a href="{{ url_for('customer.home') }}">← Back to Shop</a>
+  </aside>
+
+  <div class="admin-content">
+    {% block admin_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
