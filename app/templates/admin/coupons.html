@@ -1,0 +1,28 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+  <h1>Coupons</h1>
+  <a href="{{ url_for('admin.coupon_add') }}" class="btn btn-primary">+ Add Coupon</a>
+</div>
+<table class="admin-table">
+  <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Min Order</th><th>Used</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for coupon in coupons %}
+    <tr>
+      <td><strong>{{ coupon.code }}</strong></td>
+      <td>{{ coupon.discount_type|title }}</td>
+      <td>{% if coupon.discount_type == 'percentage' %}{{ coupon.discount_value|int }}%{% else %}₹{{ coupon.discount_value|int }}{% endif %}</td>
+      <td>₹{{ coupon.min_order_value|int }}</td>
+      <td>{{ coupon.times_used }}{% if coupon.usage_limit %}/{{ coupon.usage_limit }}{% endif %}</td>
+      <td>{% if coupon.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</td>
+      <td>
+        <form method="POST" action="{{ url_for('admin.coupon_toggle', coupon_id=coupon.id) }}" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-sm btn-outline">{% if coupon.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
