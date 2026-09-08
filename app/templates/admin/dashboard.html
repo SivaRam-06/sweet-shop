@@ -1,0 +1,101 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 style="margin-bottom:1.5rem;">Dashboard</h1>
+
+{# Stats cards #}
+<div class="admin-stats">
+  <div class="stat-card">
+    <h3>{{ total_orders }}</h3>
+    <p>Total Orders</p>
+  </div>
+  <div class="stat-card">
+    <h3>{{ orders_today }}</h3>
+    <p>Orders Today</p>
+  </div>
+  <div class="stat-card">
+    <h3>₹{{ "%.0f"|format(revenue_today) }}</h3>
+    <p>Revenue Today</p>
+  </div>
+  <div class="stat-card">
+    <h3>₹{{ "%.0f"|format(revenue_month) }}</h3>
+    <p>Revenue (30 days)</p>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr;gap:1.5rem;">
+  {# Recent orders #}
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">Recent Orders</h3>
+    {% if recent_orders %}
+    <table class="admin-table">
+      <thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for order in recent_orders %}
+        <tr>
+          <td><a href="{{ url_for('admin.order_detail', order_id=order.id) }}">#{{ order.id }}</a></td>
+          <td>{{ order.user.name if order.user else '—' }}</td>
+          <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+          <td><span class="badge badge-info">{{ order.status_label }}</span></td>
+          <td>{{ order.created_at.strftime('%d %b') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:var(--color-text-muted);">No orders yet.</p>
+    {% endif %}
+  </div>
+
+  {# Low stock alerts #}
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">⚠️ Low Stock Alerts</h3>
+    {% if low_stock %}
+    <table class="admin-table">
+      <thead><tr><th>Product</th><th>Stock</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for product in low_stock %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td><span class="badge badge-danger">{{ product.stock_qty }}</span></td>
+          <td><a href="{{ url_for('admin.product_edit', product_id=product.id) }}" class="btn btn-sm btn-outline">Restock</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:var(--color-success);">All products are well stocked!</p>
+    {% endif %}
+  </div>
+
+  {# Top products #}
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">Top Selling Products</h3>
+    {% if top_products %}
+    <table class="admin-table">
+      <thead><tr><th>Product</th><th>Units Sold</th></tr></thead>
+      <tbody>
+        {% for name, sold in top_products %}
+        <tr><td>{{ name }}</td><td>{{ sold or 0 }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="color:var(--color-text-muted);">No sales data yet.</p>
+    {% endif %}
+  </div>
+
+  {# Simple orders chart (text-based bar) #}
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">Orders This Week</h3>
+    <div style="display:flex;align-items:flex-end;gap:0.5rem;height:120px;">
+      {% for day in orders_by_day %}
+      <div style="flex:1;text-align:center;">
+        <div style="background:var(--color-primary);height:{{ (day.count * 20 + 4) if day.count else 4 }}px;border-radius:4px 4px 0 0;max-height:100px;"></div>
+        <small style="font-size:0.7rem;color:var(--color-text-muted);">{{ day.date }}</small>
+        <div style="font-size:0.75rem;font-weight:600;">{{ day.count }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
