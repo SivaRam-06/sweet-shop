@@ -1,0 +1,32 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 style="margin-bottom:1.5rem;">Delivery Zones</h1>
+
+<div class="card" style="padding:1.5rem;margin-bottom:2rem;max-width:600px;">
+  <h3 style="margin-bottom:1rem;">Add Zone</h3>
+  <form method="POST" action="{{ url_for('admin.delivery_zone_add') }}">
+    {{ form.hidden_tag() }}
+    <div class="form-group">{{ form.name.label }} {{ form.name(class="form-control") }}</div>
+    <div class="form-group">{{ form.pincodes.label }} {{ form.pincodes(class="form-control", rows=2, placeholder="400001,400002,400003") }}</div>
+    <div class="form-group">{{ form.delivery_charge.label }} {{ form.delivery_charge(class="form-control") }}</div>
+    <div class="form-check" style="margin-bottom:1rem;">{{ form.is_active() }} {{ form.is_active.label }}</div>
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
+</div>
+
+<table class="admin-table">
+  <thead><tr><th>Zone</th><th>Pincodes</th><th>Charge</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for zone in zones %}
+    <tr>
+      <td>{{ zone.name }}</td>
+      <td style="font-size:0.85rem;">{{ zone.pincodes[:60] }}{% if zone.pincodes|length > 60 %}...{% endif %}</td>
+      <td>₹{{ zone.delivery_charge|int }}</td>
+      <td>{% if zone.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" style="text-align:center;color:var(--color-text-muted);">No delivery zones configured. Default charge of ₹40 applies.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
