@@ -1,0 +1,53 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+  <h1>Order #{{ order.id }}</h1>
+  <span class="badge badge-info" style="font-size:1rem;">{{ order.status_label }}</span>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr;gap:1.5rem;">
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">Items</h3>
+    <table class="admin-table">
+      <thead><tr><th>Product</th><th>Variant</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for item in order.items %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.selected_variant }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>₹{{ "%.2f"|format(item.price_at_purchase) }}</td>
+          <td>₹{{ "%.2f"|format(item.line_total) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p style="text-align:right;margin-top:1rem;font-size:1.1rem;font-weight:700;">Total: ₹{{ "%.2f"|format(order.total_amount) }}</p>
+  </div>
+
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">Customer & Delivery</h3>
+    <p><strong>Customer:</strong> {{ order.user.name }} ({{ order.user.email }})</p>
+    {% if order.address %}
+    <p><strong>Address:</strong> {{ order.address.full_address }}, {{ order.address.city }} — {{ order.address.pincode }}</p>
+    {% endif %}
+    <p><strong>Delivery:</strong> {{ order.delivery_type|title }} — {{ order.delivery_slot|replace('_',' ')|title if order.delivery_slot else 'N/A' }}</p>
+    <p><strong>Payment:</strong> {{ order.payment_method|upper }} — {{ order.payment_status|title }}</p>
+    {% if order.notes %}<p><strong>Notes:</strong> {{ order.notes }}</p>{% endif %}
+  </div>
+
+  <div class="card" style="padding:1.5rem;">
+    <h3 style="margin-bottom:1rem;">Update Status</h3>
+    <form method="POST" action="{{ url_for('admin.order_update_status', order_id=order.id) }}">
+      {{ form.hidden_tag() }}
+      {{ form.order_status(class="form-control", style="max-width:250px;display:inline-block;margin-right:0.5rem;") }}
+      {{ form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+</div>
+
+<div style="margin-top:1rem;">
+  <a href="{{ url_for('admin.orders') }}" class="btn btn-outline">← All Orders</a>
+  <a href="{{ url_for('admin.order_invoice', order_id=order.id) }}" class="btn btn-secondary">Invoice</a>
+</div>
+{% endblock %}
