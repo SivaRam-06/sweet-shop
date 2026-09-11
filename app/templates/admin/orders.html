@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 style="margin-bottom:1.5rem;">Orders</h1>
+
+<div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+  <a href="{{ url_for('admin.orders') }}" class="btn btn-sm {% if not current_status %}btn-primary{% else %}btn-outline{% endif %}">All</a>
+  {% for s in ['placed','confirmed','preparing','out_for_delivery','delivered','cancelled'] %}
+  <a href="{{ url_for('admin.orders', status=s) }}" class="btn btn-sm {% if current_status == s %}btn-primary{% else %}btn-outline{% endif %}">{{ s|replace('_',' ')|title }}</a>
+  {% endfor %}
+</div>
+
+<table class="admin-table">
+  <thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>#{{ order.id }}</td>
+      <td>{{ order.user.name if order.user else '—' }}</td>
+      <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+      <td>{{ order.payment_method|upper }}</td>
+      <td><span class="badge badge-info">{{ order.status_label }}</span></td>
+      <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+      <td><a href="{{ url_for('admin.order_detail', order_id=order.id) }}" class="btn btn-sm btn-outline">View</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" style="text-align:center;color:var(--color-text-muted);">No orders found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if pagination.pages > 1 %}
+<div class="pagination">
+  {% if pagination.has_prev %}<a href="{{ url_for('admin.orders', page=pagination.prev_num, status=current_status) }}">&laquo;</a>{% endif %}
+  {% for p in pagination.iter_pages() %}{% if p %}<a href="{{ url_for('admin.orders', page=p, status=current_status) }}" class="{% if p == pagination.page %}active{% endif %}">{{ p }}</a>{% endif %}{% endfor %}
+  {% if pagination.has_next %}<a href="{{ url_for('admin.orders', page=pagination.next_num, status=current_status) }}">&raquo;</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}
