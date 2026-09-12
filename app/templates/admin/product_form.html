@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 style="margin-bottom:1.5rem;">{{ title }}</h1>
+<div class="card" style="padding:2rem;max-width:700px;">
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="form-group">{{ form.name.label }} {{ form.name(class="form-control") }}</div>
+    <div class="form-group">{{ form.description.label }} {{ form.description(class="form-control", rows=4) }}</div>
+    <div class="form-group">{{ form.category_id.label }} {{ form.category_id(class="form-control") }}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="form-group">{{ form.price.label }} {{ form.price(class="form-control") }}</div>
+      <div class="form-group">{{ form.discount_price.label }} {{ form.discount_price(class="form-control") }}</div>
+    </div>
+    <div class="form-group">{{ form.weight_options.label }} {{ form.weight_options(class="form-control") }}</div>
+    <div class="form-group">{{ form.stock_qty.label }} {{ form.stock_qty(class="form-control") }}</div>
+    <div class="form-check">{{ form.is_featured() }} {{ form.is_featured.label }}</div>
+    <div class="form-check" style="margin-bottom:1rem;">{{ form.is_active() }} {{ form.is_active.label }}</div>
+    <div class="form-group">{{ form.image.label }} {{ form.image(class="form-control") }}</div>
+    <div class="form-group">{{ form.extra_images.label }} {{ form.extra_images(class="form-control") }}</div>
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('admin.products') }}" class="btn btn-outline" style="margin-left:0.5rem;">Cancel</a>
+  </form>
+</div>
+{% endblock %}
