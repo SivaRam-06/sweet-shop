@@ -1,0 +1,37 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 style="margin-bottom:1.5rem;">Sales Reports</h1>
+
+<div class="card" style="padding:1.5rem;margin-bottom:2rem;max-width:600px;">
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="form-group">{{ form.date_from.label }} {{ form.date_from(class="form-control") }}</div>
+      <div class="form-group">{{ form.date_to.label }} {{ form.date_to(class="form-control") }}</div>
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+    {% if orders %}
+    <a href="{{ url_for('admin.reports', export='csv', date_from=form.date_from.data, date_to=form.date_to.data) }}" class="btn btn-secondary" style="margin-left:0.5rem;">Export CSV</a>
+    {% endif %}
+  </form>
+</div>
+
+{% if orders %}
+<p style="font-size:1.1rem;margin-bottom:1rem;"><strong>Total Revenue:</strong> ₹{{ "%.2f"|format(total_revenue) }} &nbsp;|&nbsp; <strong>Orders:</strong> {{ orders|length }}</p>
+<table class="admin-table">
+  <thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th></tr></thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>#{{ order.id }}</td>
+      <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+      <td>{{ order.user.name if order.user else '—' }}</td>
+      <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+      <td>{{ order.status_label }}</td>
+      <td>{{ order.payment_status|title }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}
