@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_content %}
+<h1 style="margin-bottom:1.5rem;">{{ user.name }}</h1>
+<div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+  <p><strong>Email:</strong> {{ user.email }}</p>
+  <p><strong>Phone:</strong> {{ user.phone or '—' }}</p>
+  <p><strong>Joined:</strong> {{ user.created_at.strftime('%d %b %Y') }}</p>
+  <p><strong>Status:</strong> {% if user.is_blocked %}<span class="badge badge-danger">Blocked</span>{% else %}<span class="badge badge-success">Active</span>{% endif %}</p>
+  {% if current_user.is_super_admin %}
+  <form method="POST" action="{{ url_for('admin.user_toggle_block', user_id=user.id) }}" style="margin-top:1rem;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-sm {% if user.is_blocked %}btn-primary{% else %}btn-outline{% endif %}" style="{% if not user.is_blocked %}color:var(--color-danger);border-color:var(--color-danger);{% endif %}">
+      {% if user.is_blocked %}Unblock User{% else %}Block User{% endif %}
+    </button>
+  </form>
+  {% endif %}
+</div>
+
+<h3 style="margin-bottom:1rem;">Order History</h3>
+{% if orders %}
+<table class="admin-table">
+  <thead><tr><th>ID</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td><a href="{{ url_for('admin.order_detail', order_id=order.id) }}">#{{ order.id }}</a></td>
+      <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+      <td>{{ order.status_label }}</td>
+      <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p style="color:var(--color-text-muted);">No orders yet.</p>
+{% endif %}
+<a href="{{ url_for('admin.users') }}" class="btn btn-outline" style="margin-top:1rem;">← Back</a>
+{% endblock %}
