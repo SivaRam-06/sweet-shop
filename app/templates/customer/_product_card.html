@@ -1,0 +1,35 @@
+{# Reusable product card partial — included in home, products, etc. #}
+<div class="card product-card">
+  <a href="{{ url_for('customer.product_detail', slug=product.slug) }}">
+    {% if product.image %}
+    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="product-image">
+    {% else %}
+    <div class="product-image" style="display:flex;align-items:center;justify-content:center;font-size:3rem;">🍬</div>
+    {% endif %}
+  </a>
+  <div class="card-body">
+    <a href="{{ url_for('customer.product_detail', slug=product.slug) }}">
+      <h3 class="product-name">{{ product.name }}</h3>
+    </a>
+    <div class="product-price">
+      {% if product.discount_price %}
+      <span class="original">₹{{ "%.0f"|format(product.price) }}</span>
+      <span class="discount">₹{{ "%.0f"|format(product.discount_price) }}</span>
+      {% else %}
+      ₹{{ "%.0f"|format(product.price) }}
+      {% endif %}
+    </div>
+    {% if product.average_rating > 0 %}
+    <div class="stars" style="font-size:0.85rem;margin-top:0.25rem;">
+      {% for i in range(product.average_rating|int) %}★{% endfor %}{% for i in range(5 - product.average_rating|int) %}☆{% endfor %}
+      <span style="color:var(--color-text-muted);font-size:0.75rem;">({{ product.review_count }})</span>
+    </div>
+    {% endif %}
+    {% if not product.is_in_stock %}
+    <span class="badge badge-danger" style="margin-top:0.5rem;">Out of Stock</span>
+    {% elif current_user.is_authenticated %}
+    <button class="btn btn-primary btn-sm btn-add-cart" style="margin-top:0.75rem;width:100%;"
+            data-product-id="{{ product.id }}">Add to Cart</button>
+    {% endif %}
+  </div>
+</div>
