@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:800px;">
+  <div class="section-header">
+    <h1>About Sweet Shop</h1>
+    <p>Crafting happiness, one sweet at a time since 2010</p>
+  </div>
+
+  <div class="card" style="padding:2rem;margin-bottom:2rem;">
+    <h2 style="margin-bottom:1rem;">Our Story</h2>
+    <p style="line-height:1.8;color:var(--color-text-muted);">
+      Sweet Shop was born from a passion for traditional Indian sweets and a dream to bring
+      the finest handcrafted confections to every doorstep. What started as a small family kitchen
+      in Mumbai has grown into a beloved online destination for sweet lovers across the country.
+    </p>
+    <p style="line-height:1.8;color:var(--color-text-muted);margin-top:1rem;">
+      Every sweet we make is prepared fresh daily using time-honored recipes passed down through
+      generations, combined with the finest ingredients sourced from trusted suppliers.
+    </p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;">
+    <div class="card" style="padding:1.5rem;text-align:center;">
+      <div style="font-size:2.5rem;">🌿</div>
+      <h3 style="margin:0.75rem 0 0.5rem;">Fresh Ingredients</h3>
+      <p style="color:var(--color-text-muted);font-size:0.9rem;">Only the finest, freshest ingredients in every batch.</p>
+    </div>
+    <div class="card" style="padding:1.5rem;text-align:center;">
+      <div style="font-size:2.5rem;">👨‍🍳</div>
+      <h3 style="margin:0.75rem 0 0.5rem;">Expert Craftsmen</h3>
+      <p style="color:var(--color-text-muted);font-size:0.9rem;">Skilled halwais with decades of experience.</p>
+    </div>
+    <div class="card" style="padding:1.5rem;text-align:center;">
+      <div style="font-size:2.5rem;">🚚</div>
+      <h3 style="margin:0.75rem 0 0.5rem;">Fast Delivery</h3>
+      <p style="color:var(--color-text-muted);font-size:0.9rem;">Same-day delivery available in select areas.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
