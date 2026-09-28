@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:900px;">
+  <h1 style="margin-bottom:1.5rem;">Shopping Cart</h1>
+
+  {% if items %}
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Variant</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr id="cart-row-{{ item.id }}">
+        <td data-label="Product">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            {% if item.product.image %}
+            <img src="{{ url_for('static', filename=item.product.image) }}" alt="{{ item.product.name }}" style="width:48px;height:48px;object-fit:cover;border-radius:var(--radius-sm);">
+            {% endif %}
+            <a href="{{ url_for('customer.product_detail', slug=item.product.slug) }}">{{ item.product.name }}</a>
+          </div>
+        </td>
+        <td data-label="Variant">{{ item.selected_variant }}</td>
+        <td data-label="Price">₹{{ "%.2f"|format(item.product.effective_price) }}</td>
+        <td data-label="Quantity">
+          <div class="qty-control">
+            <button class="qty-minus" data-item-id="{{ item.id }}">−</button>
+            <input type="number" id="qty-{{ item.id }}" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_qty }}" style="width:48px;text-align:center;border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:0.25rem;" readonly>
+            <button class="qty-plus" data-item-id="{{ item.id }}">+</button>
+          </div>
+        </td>
+        <td data-label="Total">₹{{ "%.2f"|format(item.line_total) }}</td>
+        <td data-label="">
+          <button class="btn btn-sm btn-outline btn-remove-item" data-item-id="{{ item.id }}" aria-label="Remove item">✕</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2rem;flex-wrap:wrap;gap:1rem;">
+    <a href="{{ url_for('customer.products') }}" class="btn btn-outline">← Continue Shopping</a>
+    <div style="text-align:right;">
+      <p style="font-size:1.25rem;font-weight:700;">Subtotal: <span id="cart-subtotal">₹{{ "%.2f"|format(subtotal) }}</span></p>
+      <a href="{{ url_for('customer.checkout') }}" class="btn btn-primary btn-lg" style="margin-top:0.75rem;">Proceed to Checkout</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div style="font-size:4rem;margin-bottom:1rem;">🛒</div>
+    <h3>Your cart is empty</h3>
+    <p>Looks like you haven't added any sweets yet!</p>
+    <a href="{{ url_for('customer.products') }}" class="btn btn-primary" style="margin-top:1rem;">Start Shopping</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
