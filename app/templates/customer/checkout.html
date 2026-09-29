@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:900px;">
+  <h1 style="margin-bottom:1.5rem;">Checkout</h1>
+
+  <form method="POST" action="{{ url_for('customer.checkout') }}">
+    {{ form.hidden_tag() }}
+
+    <div style="display:grid;grid-template-columns:1fr;gap:2rem;">
+      {# Left: form fields #}
+      <div>
+        {# Delivery type #}
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1rem;">Order Type</h3>
+          {% for subfield in form.delivery_type %}
+          <div class="form-check">
+            {{ subfield() }} {{ subfield.label }}
+          </div>
+          {% endfor %}
+        </div>
+
+        {# Address #}
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1rem;">Delivery Address</h3>
+          {% if addresses %}
+          {% for subfield in form.address_id %}
+          <div class="form-check">
+            {{ subfield() }} {{ subfield.label }}
+          </div>
+          {% endfor %}
+          {% else %}
+          <p style="color:var(--color-warning);">No saved addresses. <a href="{{ url_for('customer.add_address') }}">Add one now</a></p>
+          {% endif %}
+        </div>
+
+        {# Delivery slot #}
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1rem;">Delivery Time Slot</h3>
+          {{ form.delivery_slot(class="form-control") }}
+        </div>
+
+        {# Payment method #}
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1rem;">Payment Method</h3>
+          {% for subfield in form.payment_method %}
+          <div class="form-check">
+            {{ subfield() }} {{ subfield.label }}
+          </div>
+          {% endfor %}
+        </div>
+
+        {# Coupon #}
+        <div class="card" style="padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1rem;">Coupon Code</h3>
+          <div style="display:flex;gap:0.5rem;">
+            {{ form.coupon_code(class="form-control", id="coupon-code", placeholder="Enter coupon code") }}
+            <button type="button" id="apply-coupon" class="btn btn-outline">Apply</button>
+          </div>
+          <p id="coupon-message" style="margin-top:0.5rem;font-size:0.85rem;"></p>
+        </div>
+
+        {# Notes #}
+        <div class="form-group">
+          {{ form.notes.label }}
+          {{ form.notes(class="form-control", rows=2, placeholder="Any special instructions...") }}
+        </div>
+      </div>
+
+      {# Right: order summary #}
+      <div>
+        <div class="card" style="padding:1.5rem;position:sticky;top:calc(var(--nav-height) + 1rem);">
+          <h3 style="margin-bottom:1rem;">Order Summary</h3>
+          {% for item in items %}
+          <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--color-border);font-size:0.9rem;">
+            <span>{{ item.product.name }} × {{ item.quantity }}</span>
+            <span>₹{{ "%.2f"|format(item.line_total) }}</span>
+          </div>
+          {% endfor %}
+
+          <div style="margin-top:1rem;">
+            <div style="display:flex;justify-content:space-between;padding:0.25rem 0;">
+              <span>Subtotal</span><span>₹{{ "%.2f"|format(subtotal) }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:0.25rem 0;">
+              <span>Delivery</span><span>{% if delivery_charge == 0 %}FREE{% else %}₹{{ "%.2f"|format(delivery_charge) }}{% endif %}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:0.25rem 0;color:var(--color-success);">
+              <span>Discount</span><span id="discount-amount">₹0.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:0.75rem 0;font-size:1.2rem;font-weight:700;border-top:2px solid var(--color-border);margin-top:0.5rem;">
+              <span>Total</span><span id="cart-total">₹{{ "%.2f"|format(subtotal + delivery_charge) }}</span>
+            </div>
+          </div>
+
+          {{ form.submit(class="btn btn-primary btn-block btn-lg", style="margin-top:1rem;") }}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<style>@media(min-width:768px){.container>form>div{grid-template-columns:1fr 360px!important;}}</style>
+{% endblock %}
