@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:700px;">
+  <div class="section-header">
+    <h1>Contact Us</h1>
+    <p>We'd love to hear from you!</p>
+  </div>
+
+  <div class="card" style="padding:2rem;">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.name.label }} {{ form.name(class="form-control") }}
+        {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.email.label }} {{ form.email(class="form-control") }}
+        {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.subject.label }} {{ form.subject(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.message.label }} {{ form.message(class="form-control", rows=5) }}
+        {% for e in form.message.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {{ form.submit(class="btn btn-primary btn-lg") }}
+    </form>
+  </div>
+
+  <div style="text-align:center;margin-top:2rem;color:var(--color-text-muted);">
+    <p>📍 123 Sweet Street, Mumbai 400001</p>
+    <p>📞 +91 98765 43210 &nbsp;|&nbsp; ✉️ hello@sweetshop.com</p>
+  </div>
+</div>
+{% endblock %}
