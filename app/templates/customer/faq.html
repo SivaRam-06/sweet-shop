@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}FAQ{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:800px;">
+  <div class="section-header">
+    <h1>Frequently Asked Questions</h1>
+  </div>
+
+  {% set faqs = [
+    ('How do I place an order?', 'Browse our products, add items to your cart, and proceed to checkout. You can pay via Cash on Delivery or our online test payment option.'),
+    ('What are the delivery charges?', 'Delivery is free on orders above ₹500. For orders below ₹500, a nominal delivery charge of ₹40 applies (may vary by zone).'),
+    ('How long does delivery take?', 'We offer same-day delivery for orders placed before 2 PM. Standard delivery takes 1-2 business days depending on your location.'),
+    ('Can I cancel my order?', 'Yes, you can cancel your order from the order details page as long as it has not been dispatched yet.'),
+    ('Are your sweets fresh?', 'Absolutely! All our sweets are made fresh daily. We never use preservatives and recommend consuming within the suggested shelf life.'),
+    ('Do you offer bulk orders?', 'Yes! For bulk orders (weddings, corporate events), please contact us at hello@sweetshop.com or call +91 98765 43210.'),
+    ('How do I track my order?', 'Once logged in, go to "My Orders" to see real-time status updates from Placed to Delivered.'),
+    ('What payment methods do you accept?', 'We accept Cash on Delivery (COD) and online payments. Online payment integration with Razorpay/Stripe can be enabled for production.'),
+  ] %}
+
+  {% for question, answer in faqs %}
+  <details class="card" style="padding:1.25rem;margin-bottom:0.75rem;cursor:pointer;">
+    <summary style="font-weight:600;color:var(--color-secondary);">{{ question }}</summary>
+    <p style="margin-top:0.75rem;color:var(--color-text-muted);line-height:1.7;">{{ answer }}</p>
+  </details>
+  {% endfor %}
+</div>
+{% endblock %}
